@@ -19,6 +19,20 @@ namespace Forum.Service.Repositories
             _context.Add(comment);
         }
 
+        public async Task<bool> AlterVote(int id, bool up = true)
+        {
+            var comment = await GetById(id);
+            if (up)
+            {
+                comment.Votes++;
+            }
+            else
+            {
+                comment.Votes--;
+            }
+            return await this.SaveChangesAsync();
+        }
+
         public void Delete<Comment>(Comment comment)
         {
             _context.Remove(comment);

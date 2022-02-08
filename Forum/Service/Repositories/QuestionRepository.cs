@@ -19,6 +19,21 @@ namespace Forum.Service.Repositories
             _context.Add(question);
         }
 
+        public async Task<bool> AlterVote(int id, bool up = true)
+        {
+            var question=await GetById(id);
+            if (up)
+            {
+                question.Votes++;
+            }
+            else
+            {
+                question.Votes--;
+            }
+            return await this.SaveChangesAsync();
+            
+        }
+
         public async Task<bool> CheckForDuplicate(QuestionModel question)
         {
             var questions = await GetQuestionsByWord(question.Message);

@@ -17,6 +17,8 @@ namespace Forum.Service
 
         Task<bool> CheckForDuplicate(QuestionModel question);
 
+        Task<bool> AlterVote(int id,bool up = true);
+
         Task<Question> GetById(int id, bool includeAnswers = false);
 
         Task<Question[]> GetAllQuestionsAsync(bool includeAnswers = false, string orderBy= "Date");

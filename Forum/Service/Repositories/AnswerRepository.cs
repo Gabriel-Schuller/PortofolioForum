@@ -18,6 +18,20 @@ namespace Forum.Service.Repositories
             _context.Add(answer);
         }
 
+        public async Task<bool> AlterVote(int id, bool up = true)
+        {
+            var answer = await GetById(id);
+            if (up)
+            {
+                answer.Votes++;
+            }
+            else
+            {
+                answer.Votes--;
+            }
+            return await this.SaveChangesAsync();
+        }
+
         public void Delete<Answer>(Answer answer)
         {
             _context.Remove(answer);

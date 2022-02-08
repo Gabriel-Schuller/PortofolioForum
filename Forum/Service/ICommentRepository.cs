@@ -13,6 +13,8 @@ namespace Forum.Service
 
         Task<Comment[]> GetUserCommentsByIdAsync(int userId);
         Task<Comment[]> GetCommentsByWord(string word);
+        Task<bool> AlterVote(int id,bool up = true);
+
 
         Task<Comment> GetById(int id);
 

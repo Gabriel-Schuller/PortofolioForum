@@ -13,6 +13,8 @@ namespace Forum.Service
 
         Task<Answer[]> GetUserAnswersByIdAsync(int userId);
         Task<Answer[]> GetAnswersByWord(string word);
+        Task<bool> AlterVote(int id, bool up = true);
+
 
         Task<Answer> GetById(int id, bool includeComments = false);
 
