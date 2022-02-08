@@ -41,9 +41,21 @@ namespace Forum.Service.Repositories
             return await query.ToArrayAsync();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<User> GetById(int id, bool includeQuestions = false)
         {
-            return await _context.Users.FindAsync(id);
+            IQueryable<User> query = _context.Users;
+            if (includeQuestions)
+            {
+                query = query.Include(q => q.Questions);
+            }
+            query = query.Where(u => u.Id == id);
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<User[]> GetUsersByWord(string word)
+        {
+            IQueryable<User> query = _context.Users.Where(u => u.UserName.Contains(word));
+            return await query.ToArrayAsync();
         }
 
         public async Task<bool> SaveChangesAsync()

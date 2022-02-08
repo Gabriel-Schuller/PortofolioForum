@@ -14,7 +14,7 @@ namespace Forum.Service
         Task<Answer[]> GetUserAnswersByIdAsync(int userId);
         Task<Answer[]> GetAnswersByWord(string word);
 
-        Task<Answer> GetById(int id);
+        Task<Answer> GetById(int id, bool includeComments = false);
 
         Task<Answer[]> GetAllAnswersAsync(bool includeComments = false);
     }

@@ -41,9 +41,15 @@ namespace Forum.Service.Repositories
             return await query.ToArrayAsync();
         }
 
-        public async Task<Answer> GetById(int id)
+        public async Task<Answer> GetById(int id, bool includeComments = false)
         {
-            return await _context.Answers.FindAsync(id);
+            IQueryable<Answer> query = _context.Answers;
+            if (includeComments)
+            {
+                query = query.Include(q => q.Comments);
+            }
+            query = query.Where(a => a.Id == id);
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<Answer[]> GetUserAnswersByIdAsync(int userId)

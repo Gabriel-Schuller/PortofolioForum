@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,29 +15,28 @@ namespace Forum.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnswersController : ControllerBase
+    public class UserController : ControllerBase
     {
-
-        private readonly IAnswerRepository _repository;
+        private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
 
         private readonly LinkGenerator _linkGenerator;
 
-        public AnswersController(IAnswerRepository repository, LinkGenerator linkGenerator, IMapper mapper)
+        public UserController(IUserRepository repository, LinkGenerator linkGenerator, IMapper mapper)
         {
             this._repository = repository;
             this._linkGenerator = linkGenerator;
             this._mapper = mapper;
         }
-        // GET: api/<AnswersController>
+        // GET: api/<UserController>
         [HttpGet]
-        public async Task<ActionResult<AnswerModel[]>> GetAllAnswers()
+        public async Task<ActionResult<UserModel[]>> GetAllUsers()
         {
             try
             {
-                var answers = await _repository.GetAllAnswersAsync();
+                var users = await _repository.GetAllUsersAsync();
 
-                return _mapper.Map<AnswerModel[]>(answers);
+                return _mapper.Map<UserModel[]>(users);
             }
             catch (Exception)
             {
@@ -46,18 +44,18 @@ namespace Forum.Controllers
             }
         }
 
-        // GET api/<AnswersController>/5
-        [HttpGet("{answerID:int}")]
-        public async Task<ActionResult<AnswerModel>> Get(int answerID)
+        // GET api/<UserController>/5
+        [HttpGet("{userID:int}")]
+        public async Task<ActionResult<UserModel>> Get(int userID)
         {
             try
             {
-                var result = await _repository.GetById(answerID);
+                var result = await _repository.GetById(userID);
                 if (result == null)
                 {
                     return this.NotFound();
                 }
-                return _mapper.Map<AnswerModel>(result);
+                return _mapper.Map<UserModel>(result);
             }
             catch (Exception)
             {
@@ -68,15 +66,15 @@ namespace Forum.Controllers
         }
 
         [HttpGet("search/{word}")]
-        public async Task<ActionResult<AnswerModel[]>> SearchByWord(string word)
+        public async Task<ActionResult<UserModel[]>> SearchByWord(string word)
         {
             try
             {
-                var results = await _repository.GetAnswersByWord(word);
+                var results = await _repository.GetUsersByWord(word);
 
                 if (!results.Any()) return this.NotFound();
 
-                return _mapper.Map<AnswerModel[]>(results);
+                return _mapper.Map<UserModel[]>(results);
             }
             catch (Exception)
             {
@@ -86,30 +84,30 @@ namespace Forum.Controllers
             }
         }
 
-        //POST api/<AnswersController>
+        //POST api/<UserController>
         [HttpPost]
-        public async Task<ActionResult<AnswerModel>> Post([FromBody] AnswerModel model)
+        public async Task<ActionResult<UserModel>> Post([FromBody] UserModel model)
         {
 
-            var existing = await _repository.GetAnswersByWord(model.Message);
+            var existing = await _repository.GetUsersByWord(model.UserName);
 
-            if (existing.Length != 0) return BadRequest("Answer already in use");
+            if (existing.Length != 0) return BadRequest("User already in use");
 
             try
             {
-                var answer = _mapper.Map<Answer>(model);
-                _repository.Add(answer);
+                var user = _mapper.Map<User>(model);
+                _repository.Add(user);
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    var location = _linkGenerator.GetPathByAction("Get", "Answers", new { answerID = answer.Id });
+                    var location = _linkGenerator.GetPathByAction("Get", "Users", new { userID = user.Id });
 
                     if (string.IsNullOrWhiteSpace(location))
                     {
                         return BadRequest("Could not use current id");
                     }
 
-                    return Created(location, _mapper.Map<AnswerModel>(answer));
+                    return Created(location, _mapper.Map<UserModel>(user));
 
                 }
 
@@ -124,22 +122,22 @@ namespace Forum.Controllers
             return BadRequest();
         }
 
-        // PUT api/<AnswersController>/5
+        // PUT api/<UserController>/5
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<AnswerModel>> Put(int id, AnswerModel model)
+        public async Task<ActionResult<UserModel>> Put(int id, UserModel model)
         {
             try
             {
-                var oldAnswer = await _repository.GetById(id);
-                if (oldAnswer == null)
+                var oldUser = await _repository.GetById(id);
+                if (oldUser == null)
                 {
-                    return NotFound("Answer with the specified id does not exist");
+                    return NotFound("User with the specified id does not exist");
                 }
-                _mapper.Map(model, oldAnswer);
+                _mapper.Map(model, oldUser);
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    return _mapper.Map<AnswerModel>(oldAnswer);
+                    return _mapper.Map<UserModel>(oldUser);
                 }
             }
             catch (Exception)
@@ -150,19 +148,19 @@ namespace Forum.Controllers
             return BadRequest();
         }
 
-        // DELETE api/<AnswersController>/5
+        // DELETE api/<UserController>/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var oldAnswer = await _repository.GetById(id);
-                if (oldAnswer == null)
+                var oldUser = await _repository.GetById(id);
+                if (oldUser == null)
                 {
-                    return NotFound("There is no answer with the specified id");
+                    return NotFound("There is no user with the specified id");
                 }
 
-                _repository.Delete(oldAnswer);
+                _repository.Delete(oldUser);
 
                 if (await _repository.SaveChangesAsync())
                 {

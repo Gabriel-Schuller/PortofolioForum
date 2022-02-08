@@ -1,4 +1,5 @@
 ﻿using Forum.Data.Entities;
+using Forum.Models;
 using System.Threading.Tasks;
 
 namespace Forum.Service
@@ -14,8 +15,10 @@ namespace Forum.Service
         Task<Question[]> GetUserQuestionsByIdAsync(int userId);
         Task<Question[]> GetQuestionsByWord(string word);
 
-        Task<Question> GetById(int id);
+        Task<bool> CheckForDuplicate(QuestionModel question);
 
-        Task<Question[]> GetAllQuestionsAsync(bool includeAnswers = false);
+        Task<Question> GetById(int id, bool includeAnswers = false);
+
+        Task<Question[]> GetAllQuestionsAsync(bool includeAnswers = false, string orderBy= "Date");
     }
 }
