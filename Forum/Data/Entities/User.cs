@@ -18,7 +18,7 @@ namespace Forum.Data.Entities
         [MaxLength(50)]
         [MinLength(3)]
         public string Password { get; set; }
-        public DateTime RegistrationDate { get; set; } = DateTime.Now.Date;
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
         public ICollection<Question> Questions { get; set; }
         public ICollection<Answer> Answers { get; set; }
         public ICollection<Comment> Comments { get; set; }

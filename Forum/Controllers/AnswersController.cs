@@ -92,7 +92,7 @@ namespace Forum.Controllers
 
             var existing = await _repository.GetAnswersByWord(model.Message);
 
-            if (existing != null) return BadRequest("Answer already in use");
+            if (existing.Length != 0) return BadRequest("Answer already in use");
 
             try
             {

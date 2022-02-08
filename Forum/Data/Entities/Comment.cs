@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Forum.Data.Entities
@@ -13,6 +14,8 @@ namespace Forum.Data.Entities
         [StringLength(400, MinimumLength = 10)]
         public string Message { get; set; }
         public int Votes { get; set; } = 0;
+        public DateTime Date { get; set; } = DateTime.Now;
+
         public int? UserId { get; set; }
 
         public User User { get; set; }
