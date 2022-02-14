@@ -5,9 +5,6 @@ namespace Forum.Service
 {
     public interface IAnswerRepository
     {
-        void Add<Answer>(Answer answer);
-
-        void Delete<Answer>(Answer answer);
 
         Task<bool> SaveChangesAsync();
 

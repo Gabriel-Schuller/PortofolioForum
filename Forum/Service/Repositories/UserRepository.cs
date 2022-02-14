@@ -14,17 +14,6 @@ namespace Forum.Service.Repositories
             this._context = context;
         }
 
-        public void Add<User>(User user)
-        {
-            _context.Add(user);
-        }
-
-        public void Delete<User>(User user)
-        {
-            _context.Remove(user);
-        }
-
-
         public async Task<User[]> GetAllUsersAsync(bool includeQuestions, bool IncludeAnswers)
         {
             IQueryable<User> query = _context.Users;

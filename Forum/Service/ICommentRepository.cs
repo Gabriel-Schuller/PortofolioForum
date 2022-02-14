@@ -5,9 +5,6 @@ namespace Forum.Service
 {
     public interface ICommentRepository
     {
-        void Add<Comment>(Comment comment);
-
-        void Delete<Comment>(Comment comment);
 
         Task<bool> SaveChangesAsync();
 

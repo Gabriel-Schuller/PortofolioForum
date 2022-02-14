@@ -13,10 +13,6 @@ namespace Forum.Service.Repositories
         {
             this._context = context;
         }
-        public void Add<Answer>(Answer answer)
-        {
-            _context.Add(answer);
-        }
 
         public async Task<bool> AlterVote(int id, bool up = true)
         {
@@ -30,11 +26,6 @@ namespace Forum.Service.Repositories
                 answer.Votes--;
             }
             return await this.SaveChangesAsync();
-        }
-
-        public void Delete<Answer>(Answer answer)
-        {
-            _context.Remove(answer);
         }
 
         public async Task<Answer[]> GetAllAnswersAsync(bool includeComments = false)

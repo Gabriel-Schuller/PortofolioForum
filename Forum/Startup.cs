@@ -46,6 +46,8 @@ namespace Forum
             services.AddScoped<IAnswerRepository, AnswerRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IBaseRepository, BaseRepository>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,5 +11,7 @@ namespace Forum.Models
         [StringLength(1000, MinimumLength = 10)]
         public string Message { get; set; }
 
+
+
     }
 }

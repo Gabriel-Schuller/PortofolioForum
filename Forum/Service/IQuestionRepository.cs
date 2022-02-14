@@ -6,9 +6,7 @@ namespace Forum.Service
 {
     public interface IQuestionRepository
     {
-        void Add<Question>(Question question);
 
-        void Delete<Question>(Question question);
 
         Task<bool> SaveChangesAsync();
 

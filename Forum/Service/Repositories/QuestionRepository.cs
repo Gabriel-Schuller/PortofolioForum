@@ -14,10 +14,7 @@ namespace Forum.Service.Repositories
         {
             this._context = context;
         }
-        public void Add<Question>(Question question)
-        {
-            _context.Add(question);
-        }
+        
 
         public async Task<bool> AlterVote(int id, bool up = true)
         {
@@ -39,19 +36,14 @@ namespace Forum.Service.Repositories
             var questions = await GetQuestionsByWord(question.Message);
             if (questions.Length == 0)
             {
-                IQueryable<Question> query = _context.Questions.Where(q => q.Title.Contains(question.Title));
-                questions = await query.ToArrayAsync();
+                
+                questions = await GetQuestionsByWord(question.Title);
                 if (questions.Length == 0)
                 {
                     return false;
                 }
             }
             return true;
-        }
-
-        public void Delete<Question>(Question question)
-        {
-            _context.Remove(question);
         }
 
         public async Task<Question[]> GetAllQuestionsAsync(bool includeAnswers, string orderBy = "Date")
@@ -97,13 +89,9 @@ namespace Forum.Service.Repositories
 
         public async Task<Question[]> GetQuestionsByWord(string word)
         {
-            IQueryable<Question> query = _context.Questions.Where(q => q.Message.Contains(word));
+            IQueryable<Question> query = _context.Questions.Where(q => q.Message.Contains(word) || q.Title.Contains(word));
             Question[] questions = await query.ToArrayAsync();
-            if (questions.Length == 0)
-            {
-                query = _context.Questions.Where(q => q.Title.Contains(word));
-                questions = await query.ToArrayAsync();
-            }
+            
             return questions;
         }
 

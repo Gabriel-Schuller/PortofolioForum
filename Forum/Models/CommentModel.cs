@@ -7,5 +7,8 @@ namespace Forum.Models
         [Required]
         [StringLength(400, MinimumLength = 10)]
         public string Message { get; set; }
+
+
+
     }
 }

@@ -14,10 +14,6 @@ namespace Forum.Service.Repositories
             this._context = context;
         }
 
-        public void Add<Comment>(Comment comment)
-        {
-            _context.Add(comment);
-        }
 
         public async Task<bool> AlterVote(int id, bool up = true)
         {
@@ -33,10 +29,6 @@ namespace Forum.Service.Repositories
             return await this.SaveChangesAsync();
         }
 
-        public void Delete<Comment>(Comment comment)
-        {
-            _context.Remove(comment);
-        }
 
         public async Task<Comment[]> GetAllCommentsAsync()
         {

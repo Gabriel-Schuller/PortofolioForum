@@ -21,14 +21,15 @@ namespace Forum.Controllers
 
         private readonly IAnswerRepository _repository;
         private readonly IMapper _mapper;
-
+        private readonly IBaseRepository _baseRepository;
         private readonly LinkGenerator _linkGenerator;
 
-        public AnswersController(IAnswerRepository repository, LinkGenerator linkGenerator, IMapper mapper)
+        public AnswersController(IAnswerRepository repository, LinkGenerator linkGenerator, IMapper mapper, IBaseRepository baseRepository)
         {
             this._repository = repository;
             this._linkGenerator = linkGenerator;
             this._mapper = mapper;
+            this._baseRepository = baseRepository;
         }
         // GET: api/<AnswersController>
         [HttpGet]
@@ -67,6 +68,8 @@ namespace Forum.Controllers
             }
         }
 
+        //To add a controller to get the Answers for a specific question
+
         [HttpGet("search/{word}")]
         public async Task<ActionResult<AnswerModel[]>> SearchByWord(string word)
         {
@@ -86,7 +89,7 @@ namespace Forum.Controllers
             }
         }
 
-        //POST api/<AnswersController>
+        //POST api/{questionId}/add/<AnswersController>
         [HttpPost]
         public async Task<ActionResult<AnswerModel>> Post([FromBody] AnswerModel model)
         {
@@ -98,7 +101,7 @@ namespace Forum.Controllers
             try
             {
                 var answer = _mapper.Map<Answer>(model);
-                _repository.Add(answer);
+                _baseRepository.Add(answer);
 
                 if (await _repository.SaveChangesAsync())
                 {
@@ -151,6 +154,7 @@ namespace Forum.Controllers
         }
 
         // DELETE api/<AnswersController>/5
+        
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -162,7 +166,7 @@ namespace Forum.Controllers
                     return NotFound("There is no answer with the specified id");
                 }
 
-                _repository.Delete(oldAnswer);
+                _baseRepository.Delete(oldAnswer);
 
                 if (await _repository.SaveChangesAsync())
                 {

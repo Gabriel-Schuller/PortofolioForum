@@ -5,9 +5,7 @@ namespace Forum.Service
 {
     public interface IUserRepository
     {
-        void Add<User>(User user);
-
-        void Delete<User>(User user);
+        
 
         Task<bool> SaveChangesAsync();
 

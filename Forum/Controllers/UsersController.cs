@@ -15,18 +15,20 @@ namespace Forum.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
-
+        private readonly IBaseRepository _baseRepository;
         private readonly LinkGenerator _linkGenerator;
 
-        public UserController(IUserRepository repository, LinkGenerator linkGenerator, IMapper mapper)
+        public UsersController(IUserRepository repository, LinkGenerator linkGenerator, IMapper mapper,
+                                IBaseRepository baseRepository)
         {
             this._repository = repository;
             this._linkGenerator = linkGenerator;
             this._mapper = mapper;
+            this._baseRepository = baseRepository;
         }
         // GET: api/<UserController>
         [HttpGet]
@@ -96,7 +98,7 @@ namespace Forum.Controllers
             try
             {
                 var user = _mapper.Map<User>(model);
-                _repository.Add(user);
+                _baseRepository.Add(user);
 
                 if (await _repository.SaveChangesAsync())
                 {
@@ -160,7 +162,7 @@ namespace Forum.Controllers
                     return NotFound("There is no user with the specified id");
                 }
 
-                _repository.Delete(oldUser);
+                _baseRepository.Delete(oldUser);
 
                 if (await _repository.SaveChangesAsync())
                 {

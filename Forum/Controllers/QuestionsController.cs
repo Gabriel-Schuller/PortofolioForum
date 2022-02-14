@@ -21,11 +21,15 @@ namespace Forum.Controllers
         private readonly IQuestionRepository _repository;
         private readonly LinkGenerator _linkGenerator;
         private readonly IMapper _mapper;
-        public QuestionsController(IQuestionRepository repository, LinkGenerator linkGenerator, IMapper mapper )
+        private readonly IBaseRepository _baseRepository;
+
+        public QuestionsController(IQuestionRepository repository,
+            LinkGenerator linkGenerator, IMapper mapper, IBaseRepository baseRepository)
         {
             this._repository = repository;
             this._linkGenerator = linkGenerator;
             this._mapper = mapper;
+            this._baseRepository = baseRepository;
         }
         // GET: api/<QuestionsController>
         [HttpGet]
@@ -87,7 +91,7 @@ namespace Forum.Controllers
         [HttpPost]
         public async Task<ActionResult<QuestionModel>> Post([FromBody] QuestionModel model)
         {
-
+            //On future sprints, we should add the userID, taken from the jwt Token.
             var existing = await _repository.CheckForDuplicate(model);
 
             if (existing) return BadRequest("Question already in use");
@@ -95,11 +99,11 @@ namespace Forum.Controllers
             try
             {
                 var question = _mapper.Map<Question>(model);
-                _repository.Add(question);
+                _baseRepository.Add<Question>(question);
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    var location = _linkGenerator.GetPathByAction("Get", "Questions", new { questionID = question.Id});
+                    var location = _linkGenerator.GetPathByAction("Get", "Questions", new { questionID = question.Id });
 
                     if (string.IsNullOrWhiteSpace(location))
                     {
@@ -164,7 +168,7 @@ namespace Forum.Controllers
                     return NotFound("There is no question with the specified id");
                 }
 
-                _repository.Delete(oldQuestion);
+                _baseRepository.Delete(oldQuestion);
 
                 if (await _repository.SaveChangesAsync())
                 {
