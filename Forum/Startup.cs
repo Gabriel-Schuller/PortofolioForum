@@ -1,3 +1,4 @@
+using Forum.Helpers;
 using Forum.Service;
 using Forum.Service.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -47,12 +48,16 @@ namespace Forum
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IBaseRepository, BaseRepository>();
+            services.AddScoped<JwtService>();
 
             services.AddCors(option =>
             {
                 option.AddDefaultPolicy(builder =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
 
             });

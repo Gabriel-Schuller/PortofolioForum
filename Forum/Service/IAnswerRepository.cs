@@ -6,7 +6,7 @@ namespace Forum.Service
     public interface IAnswerRepository
     {
 
-        Task<bool> SaveChangesAsync();
+       
 
         Task<Answer[]> GetUserAnswersByIdAsync(int userId);
         Task<Answer[]> GetAnswersByWord(string word);

@@ -103,7 +103,7 @@ namespace Forum.Controllers
                 var answer = _mapper.Map<Answer>(model);
                 _baseRepository.Add(answer);
 
-                if (await _repository.SaveChangesAsync())
+                if (await _baseRepository.SaveChangesAsync())
                 {
                     var location = _linkGenerator.GetPathByAction("Get", "Answers", new { answerID = answer.Id });
 
@@ -140,7 +140,7 @@ namespace Forum.Controllers
                 }
                 _mapper.Map(model, oldAnswer);
 
-                if (await _repository.SaveChangesAsync())
+                if (await _baseRepository.SaveChangesAsync())
                 {
                     return _mapper.Map<AnswerModel>(oldAnswer);
                 }
@@ -168,7 +168,7 @@ namespace Forum.Controllers
 
                 _baseRepository.Delete(oldAnswer);
 
-                if (await _repository.SaveChangesAsync())
+                if (await _baseRepository.SaveChangesAsync())
                 {
                     return Ok();
                 }

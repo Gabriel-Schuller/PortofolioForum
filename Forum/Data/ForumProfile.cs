@@ -12,6 +12,7 @@ namespace Forum.Data
             this.CreateMap<Question, QuestionModel>().ReverseMap();
             this.CreateMap<Answer, AnswerModel>().ReverseMap();
             this.CreateMap<Comment, CommentModel>().ReverseMap();
+            this.CreateMap<User, RegisterUserModel>().ReverseMap();
 
         }
     }

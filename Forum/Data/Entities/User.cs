@@ -15,9 +15,13 @@ namespace Forum.Data.Entities
         [MinLength(3)]
         public string UserName { get; set; }
         [Required]
-        [MaxLength(50)]
+        [MaxLength(100)]
         [MinLength(3)]
         public string Password { get; set; }
+        [Required]
+        [MaxLength(30)]
+        [MinLength(3)]
+        public string Email { get; set; }
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
         public ICollection<Question> Questions { get; set; }
         public ICollection<Answer> Answers { get; set; }

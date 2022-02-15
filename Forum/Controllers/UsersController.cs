@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Forum.Data.Entities;
+using Forum.Helpers;
 using Forum.Models;
 using Forum.Service;
 using Microsoft.AspNetCore.Http;
@@ -20,15 +21,17 @@ namespace Forum.Controllers
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
         private readonly IBaseRepository _baseRepository;
+        private readonly JwtService _jwtService;
         private readonly LinkGenerator _linkGenerator;
 
         public UsersController(IUserRepository repository, LinkGenerator linkGenerator, IMapper mapper,
-                                IBaseRepository baseRepository)
+                                IBaseRepository baseRepository, JwtService service)
         {
             this._repository = repository;
             this._linkGenerator = linkGenerator;
             this._mapper = mapper;
             this._baseRepository = baseRepository;
+            this._jwtService = service;
         }
         // GET: api/<UserController>
         [HttpGet]
@@ -87,20 +90,22 @@ namespace Forum.Controllers
         }
 
         //POST api/<UserController>
-        [HttpPost]
-        public async Task<ActionResult<UserModel>> Post([FromBody] UserModel model)
+        [HttpPost("register")]
+        public async Task<ActionResult<UserModel>> Post([FromBody] RegisterUserModel model)
         {
 
-            var existing = await _repository.GetUsersByWord(model.UserName);
+            var existing = await _repository.GetUserByUsername(model.UserName);
 
-            if (existing.Length != 0) return BadRequest("User already in use");
+            if (existing != null) return BadRequest("User already in use");
 
             try
             {
                 var user = _mapper.Map<User>(model);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
                 _baseRepository.Add(user);
 
-                if (await _repository.SaveChangesAsync())
+                if (await _baseRepository.SaveChangesAsync())
                 {
                     var location = _linkGenerator.GetPathByAction("Get", "Users", new { userID = user.Id });
 
@@ -124,6 +129,72 @@ namespace Forum.Controllers
             return BadRequest();
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<RegisterUserModel>> Login(UserModel model)
+        {
+            try
+            {
+                var user = await _repository.GetUserByUsername(model.UserName);
+                if (user == null) return BadRequest(new { message = "Invalid Cridentials" });
+
+                if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                {
+                    return BadRequest(new { message = "Invalid Cridentials" });
+                }
+
+                var jwt = _jwtService.Generate(user.Id);
+
+                Response.Cookies.Append("jwt", jwt, new CookieOptions
+                {
+                    Secure = true,
+                    HttpOnly = true,
+                    IsEssential = true,
+                    Expires = DateTime.Now.AddMonths(1),
+                    SameSite = SameSiteMode.None
+
+                });
+
+                return Ok(_mapper.Map<RegisterUserModel>(user));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server error");
+            }
+        }
+
+        [HttpGet("user")]
+        public async Task<ActionResult<RegisterUserModel>> UserJwt()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+
+                var token = _jwtService.Verify(jwt);
+
+                int userId = int.Parse(token.Issuer);
+
+                var user =await _repository.GetById(userId);
+
+                return Ok(_mapper.Map<RegisterUserModel>(user));
+            }
+            catch (Exception e)
+            {
+
+                return Unauthorized(e);
+            }
+
+
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt");
+
+            return Ok();
+        }
+
+
         // PUT api/<UserController>/5
         [HttpPut("{id:int}")]
         public async Task<ActionResult<UserModel>> Put(int id, UserModel model)
@@ -137,7 +208,7 @@ namespace Forum.Controllers
                 }
                 _mapper.Map(model, oldUser);
 
-                if (await _repository.SaveChangesAsync())
+                if (await _baseRepository.SaveChangesAsync())
                 {
                     return _mapper.Map<UserModel>(oldUser);
                 }
@@ -164,7 +235,7 @@ namespace Forum.Controllers
 
                 _baseRepository.Delete(oldUser);
 
-                if (await _repository.SaveChangesAsync())
+                if (await _baseRepository.SaveChangesAsync())
                 {
                     return Ok();
                 }

@@ -27,8 +27,9 @@ namespace Forum.Service.Repositories
             {
                 question.Votes--;
             }
-            return await this.SaveChangesAsync();
-            
+            return (await _context.SaveChangesAsync()) > 0;
+
+
         }
 
         public async Task<bool> CheckForDuplicate(QuestionModel question)
@@ -101,9 +102,6 @@ namespace Forum.Service.Repositories
             return await query.ToArrayAsync();
         }
 
-        public async Task<bool> SaveChangesAsync()
-        {
-            return (await _context.SaveChangesAsync()) > 0;
-        }
+        
     }
 }

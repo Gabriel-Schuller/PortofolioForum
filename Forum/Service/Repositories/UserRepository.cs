@@ -46,10 +46,12 @@ namespace Forum.Service.Repositories
             IQueryable<User> query = _context.Users.Where(u => u.UserName.Contains(word));
             return await query.ToArrayAsync();
         }
-
-        public async Task<bool> SaveChangesAsync()
+        public async Task<User> GetUserByUsername(string username)
         {
-            return (await _context.SaveChangesAsync()) > 0;
+            IQueryable<User> query = _context.Users.Where(u => u.UserName == username);
+            return await query.FirstOrDefaultAsync();
         }
+
+        
     }
 }

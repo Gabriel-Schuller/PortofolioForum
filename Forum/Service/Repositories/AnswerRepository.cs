@@ -25,7 +25,7 @@ namespace Forum.Service.Repositories
             {
                 answer.Votes--;
             }
-            return await this.SaveChangesAsync();
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
         public async Task<Answer[]> GetAllAnswersAsync(bool includeComments = false)
@@ -63,9 +63,6 @@ namespace Forum.Service.Repositories
             return await query.ToArrayAsync();
         }
 
-        public async Task<bool> SaveChangesAsync()
-        {
-            return (await _context.SaveChangesAsync()) > 0;
-        }
+       
     }
 }

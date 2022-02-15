@@ -8,7 +8,7 @@ namespace Forum.Service
     {
 
 
-        Task<bool> SaveChangesAsync();
+    
 
         Task<Question[]> GetUserQuestionsByIdAsync(int userId);
         Task<Question[]> GetQuestionsByWord(string word);

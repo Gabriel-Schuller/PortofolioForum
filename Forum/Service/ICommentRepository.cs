@@ -6,7 +6,7 @@ namespace Forum.Service
     public interface ICommentRepository
     {
 
-        Task<bool> SaveChangesAsync();
+       
 
         Task<Comment[]> GetUserCommentsByIdAsync(int userId);
         Task<Comment[]> GetCommentsByWord(string word);

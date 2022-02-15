@@ -26,7 +26,7 @@ namespace Forum.Service.Repositories
             {
                 comment.Votes--;
             }
-            return await this.SaveChangesAsync();
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
 
@@ -52,9 +52,6 @@ namespace Forum.Service.Repositories
             return await query.ToArrayAsync();
         }
 
-        public async Task<bool> SaveChangesAsync()
-        {
-            return (await _context.SaveChangesAsync()) > 0;
-        }
+        
     }
 }

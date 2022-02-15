@@ -29,6 +29,12 @@ namespace Forum.Service
                 .WithOne(a => a.Answer)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<User>(entitity =>
+            {
+                entitity.HasIndex(e => e.Email).IsUnique();
+                entitity.HasIndex(e => e.UserName).IsUnique();
+            });
+
         }
     }
 }

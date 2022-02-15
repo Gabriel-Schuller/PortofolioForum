@@ -21,9 +21,11 @@ namespace Forum.Service.Repositories
             _context.Remove(entity);
         }
 
-        public Task<bool> SaveChangesAsync()
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new System.NotImplementedException();
+            return (await _context.SaveChangesAsync()) > 0;
         }
+
+
     }
 }
