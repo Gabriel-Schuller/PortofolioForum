@@ -2,7 +2,9 @@ using Forum.Helpers;
 using Forum.Service;
 using Forum.Service.Repositories;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +64,22 @@ namespace Forum
 
             });
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+
+                // prevent access from javascript 
+                options.HttpOnly = HttpOnlyPolicy.Always;
+
+                // If the URI that provides the cookie is HTTPS, 
+                // cookie will be sent ONLY for HTTPS requests 
+                // (refer mozilla docs for details) 
+                options.Secure = CookieSecurePolicy.SameAsRequest;
+
+                // refer "SameSite cookies" on mozilla website 
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,6 +95,8 @@ namespace Forum
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCookiePolicy();
 
             app.UseCors();
 

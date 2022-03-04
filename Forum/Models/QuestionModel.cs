@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Forum.Models
 {
@@ -10,6 +11,8 @@ namespace Forum.Models
         [Required]
         [StringLength(1000, MinimumLength = 10)]
         public string Message { get; set; }
+
+        public DateTime Date { get; set; }
 
 
 
