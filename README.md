@@ -48,10 +48,11 @@ This project is a .Net Core API project meant to offer the backend functionality
 
 None
 
-
 ## Pictures
 
 
-![Picture of Unity+Game Capture](Images/FileSeparation.PNG?raw=true "Title")
 
-![Picture of Unity+Game Capture](Images/DependencyPackages.PNG?raw=true "Title")
+![FileSeparation](Images/FileSeparation.PNG?raw=true "Title")
+
+![Dependency Packages](Images/DependencyPackages.PNG?raw=true "Title")
+
